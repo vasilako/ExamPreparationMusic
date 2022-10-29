@@ -1,7 +1,8 @@
 from django.core import exceptions
 from django.shortcuts import render, redirect
 
-from ExamPreparationMusic.music.forms import ProfileCreateForm, AlbumAddForm, AlbumEditForm, AlbumDeleteForm
+from ExamPreparationMusic.music.forms import ProfileCreateForm, AlbumAddForm, AlbumEditForm, AlbumDeleteForm, \
+    ProfileDeleteForm
 from ExamPreparationMusic.music.models import Profile, Album
 
 
@@ -94,12 +95,34 @@ def delete_album(request, pk):
     return render(request, 'albums/delete-album.html', contex)
 
 
-def details_profile(request, pk):
-
-    return  render(request, 'profiles/profile-details.html')
+def details_profile(request):
+    profile = get_profiles()
+    album = Album.objects.all()
+    contex = {
+        'profile':profile,
+        'album': album
+    }
+    return  render(request, 'profiles/profile-details.html', contex)
 
 
 def delete_profiles(request):
-    return  render(request, 'profiles/profile-delete.html')
+    profile = get_profiles()
+
+    if not profile == None:
+        if request.method == 'POST':
+            form = ProfileDeleteForm(request.POST)
+            if form.is_valid():
+                Album.objects.all().delete()
+                profile.delete()
+                return redirect('index')
+
+        else:
+            form = ProfileDeleteForm(instance=profile)
+    contex = {
+        'form': form
+    }
+
+    return render(request, 'profiles/profile-delete.html', contex)
+
 
 

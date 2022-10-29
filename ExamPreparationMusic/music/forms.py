@@ -46,6 +46,13 @@ class AlbumDeleteForm(forms.ModelForm):
 
         return self.instance
 
+class ProfileDeleteForm(forms.ModelForm):
+
+    class Meta:
+        model = Profile
+        fields= ()
+
+
 
 
 
